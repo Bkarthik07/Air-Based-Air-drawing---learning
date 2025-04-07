@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw & Learn</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+
+</head>
+<body>
+    <header>
+        <div class="name">
+            <img src="" alt="logo">
+            <h1>Draw & Learn</h1>
+        </div>
+        <div class="info">
+            <a href="virtual_draw.html" class="vi">Virtual Draw</a>
+            <a href="ai_board.html" class="Av">AI Board</a>
+            <a href="speech_draw.html" class="Speech">Speech</a>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <!-- Camera Box -->
+            <div class="camera-box">
+                <h3>Camera Feed</h3>
+                <img src="{{ url_for('video_feed') }}" alt="Camera Feed" id="video">
+            </div>
+
+            <!-- Result Box -->
+            <div class="result-box">
+                <h3>Recognition Result</h3>
+                <p id="result-text">Your output will appear here...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 Draw & Learn. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Access webcam for camera feed
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                document.getElementById("camera-feed").srcObject = stream;
+            })
+            .catch((error) => {
+                console.error("Error accessing webcam:", error);
+            });
+    </script>
+</body>
+</html>
