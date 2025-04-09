@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Draw & Learn</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
-
 </head>
 <body>
     <header>
@@ -21,14 +20,17 @@
     </header>
     
     <main>
+        <div class="controls">
+            <button class="start-btn" onclick="startVideo()">Start</button>
+            <button class="stop-btn" onclick="stopVideo()">Stop</button>
+            <button class="solve-btn" onclick="solve()">Solve</button>
+        </div>
         <div class="container">
-            <!-- Camera Box -->
             <div class="camera-box">
                 <h3>Camera Feed</h3>
-                <img src="{{ url_for('video_feed') }}" alt="Camera Feed" id="video">
+                <img id="video" alt="Camera Feed" />
             </div>
 
-            <!-- Result Box -->
             <div class="result-box">
                 <h3>Recognition Result</h3>
                 <p id="result-text">Your output will appear here...</p>
@@ -41,14 +43,25 @@
     </footer>
 
     <script>
-        // Access webcam for camera feed
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
-                document.getElementById("camera-feed").srcObject = stream;
-            })
-            .catch((error) => {
-                console.error("Error accessing webcam:", error);
-            });
+        function startVideo() {
+            document.getElementById("video").src = "{{ url_for('video_feed') }}";
+        }
+
+        function stopVideo() {
+            document.getElementById("video").src = "";
+        }
+
+        async function solve() {
+            const resultText = document.getElementById("result-text");
+            resultText.innerText = "Analyzing...";
+            try {
+                const response = await fetch("/analyze_canvas");
+                const data = await response.json();
+                resultText.innerText = data.response;
+            } catch (error) {
+                resultText.innerText = "Error analyzing the canvas.";
+            }
+        }
     </script>
 </body>
 </html>

@@ -100,6 +100,7 @@ video {
 /* Result Box */
 .result-box {
     background: #e0e0e0;
+    overflow: hidden;
 }
 
 .result-box p {
@@ -116,3 +117,28 @@ video {
     margin: 1px;
     border-radius: 10px;
 }
+.controls {
+    text-align: center;
+    margin: 20px 0;
+}
+.controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+.start-btn {
+    background-color: #28a745;
+}
+
+.stop-btn {
+    background-color: #dc3545;
+}
+.solve-btn{
+    background-color: #00457c;
+}
+#result-text { 
+     overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; } 
