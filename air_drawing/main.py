@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, jsonify
+from flask import Flask, render_template, Response, jsonify,request
 import cv2
 import mediapipe as mp
 import numpy as np
@@ -6,6 +6,9 @@ from collections import deque
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
+from PIL import Image
+import io
+import base64
 
 load_dotenv()  
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -167,6 +170,36 @@ def analyze_canvas():
             "error": str(e),
             "status": "error"
         }), 500
+
+
+@app.route("/ai_board")
+def ai_board():
+    return render_template("ai_board.html")
+
+
+
+@app.route('/solve', methods=['POST'])
+def solve():
+    image_file = request.files['image']
+    image = Image.open(image_file)
+
+    # Convert image to bytes
+    img_io = io.BytesIO()
+    image.save(img_io, format='PNG')
+    image_bytes = img_io.getvalue()
+
+    # Send to Gemini for processing
+    response = model.generate_content([
+        "You are a mathematical problem solver. Given a mathematical problem, provide a step-by-step solution in a detailed and structured manner. Explain each step clearly to ensure easy understanding. If an image is provided, first extract the text using OCR before solving. Format the response neatly using equations where necessary. Use this format:\n\nStep 1: Identify the numbers and operators\nStep 2: Perform the calculation\nAnswer: [Final result]\n\n\nUse clear spacing and avoid special characters like $ or \\.  ",
+            {"mime_type": "image/png", "data": image_bytes}
+    ])
+
+    result = response.text.strip()
+
+    return jsonify({
+        'result': result,
+        'status': 'success'
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
